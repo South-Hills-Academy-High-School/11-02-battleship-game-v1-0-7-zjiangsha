@@ -39,6 +39,8 @@ function updatePX (whichPlayer: string) {
     }
 }
 function placeAllCPUBoats () {
+    cpuLastHitRow = -1
+    cpuLastHitCol = -1
     cpuPlaceBoat0()
     cpuPlaceBoat1()
     cpuPlaceBoat2()
@@ -69,8 +71,12 @@ function makeBoatVisible (boatArray: Sprite[]) {
     }
 }
 function cpuMove () {
+    cpuHitOrMiss()
     game.splash("CPU Move")
     grid.place(cursor, tiles.getTileLocation(randint(0, 9), randint(0, 6)))
+    while (isAttackingTwice(hitOrMissP2)) {
+        grid.place(cursor, tiles.getTileLocation(randint(0, 9), randint(0, 6)))
+    }
     isHitOrMiss(boatSpriteArrayP1, hitOrMissP2)
     switchPlayer()
 }
@@ -229,6 +235,8 @@ function isHitOrMiss (enemyBoats: Sprite[][], hitOrMissPX: Sprite[]) {
                 grid.place(boomSprite, grid.getLocation(cursor))
                 hitOrMissPX.push(boomSprite)
                 game.splash("" + hitOrMissPlayer + " HIT!! " + convertToText(isPlayerXWinner(enemyBoats, hitOrMissPX)) + " boats destroyed!")
+                cpuLastHitRow = grid.spriteRow(cursor)
+                cpuLastHitCol = grid.spriteCol(cursor)
                 return 1
             }
         }
@@ -670,6 +678,9 @@ function cpuPlaceBoat2 () {
         grid.place(boatSpriteArrayP2[2][3], grid.add(grid.getLocation(cursor), 0, 3))
     }
 }
+function cpuHitOrMiss () {
+    game.splash("Row:" + cpuLastHitRow + "Col:" + cpuLastHitCol)
+}
 function turnBoat (boatNum: number, boatRotateArray: string[]) {
     if (boatRotateArray[boatNum] == "up") {
         boatRotateArray[boatNum] = "sideways"
@@ -696,6 +707,8 @@ let hitOrMissP1: Sprite[] = []
 let currentBoatBoomCounter = 0
 let killCount = 0
 let hitOrMissP2: Sprite[] = []
+let cpuLastHitCol = 0
+let cpuLastHitRow = 0
 let boatRotateArrayP2: string[] = []
 let boatSpriteArrayP2: Sprite[][] = []
 let boatRotateArrayP1: string[] = []
