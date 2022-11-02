@@ -97,15 +97,21 @@ function isPlayerXWinner (enemyBoats: Sprite[][], hitOrMissPX: Sprite[]) {
     return killCount
 }
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (isAttackingTwice(hitOrMissP1)) {
-    	
-    } else if (moveBoatFlag == 3) {
+    if (moveBoatFlag == 3) {
         if (currentPlayer == "Player1") {
-            isHitOrMiss(boatSpriteArrayP2, hitOrMissP1)
-            switchPlayer()
+            if (isAttackingTwice(hitOrMissP1)) {
+                game.splash("That's the WRONG SQUARE!")
+            } else {
+                isHitOrMiss(boatSpriteArrayP2, hitOrMissP1)
+                switchPlayer()
+            }
         } else {
-            isHitOrMiss(boatSpriteArrayP1, hitOrMissP2)
-            switchPlayer()
+            if (isAttackingTwice(hitOrMissP2)) {
+                game.splash("That's the WRONG SQUARE!")
+            } else {
+                isHitOrMiss(boatSpriteArrayP1, hitOrMissP2)
+                switchPlayer()
+            }
         }
     } else {
         currentBoat += 1
@@ -452,6 +458,8 @@ function cpuPlaceBoat1 () {
     }
 }
 function isAttackingTwice (boomSpriteArrayPX: Sprite[]) {
+    grid.place(shadowCursor, tiles.getTileLocation(-10, -10))
+    boomSpriteArrayPX[0] = shadowCursor
     for (let currentBoomSprite of boomSpriteArrayPX) {
         if (grid.spriteCol(currentBoomSprite) == grid.spriteCol(cursor) && grid.spriteRow(currentBoomSprite) == grid.spriteRow(cursor)) {
             return 1
